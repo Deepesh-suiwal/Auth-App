@@ -41,12 +41,12 @@ export async function login(req, res, next) {
     const user = await data.findOne({ email });
 
     if (!user || !user.password || !user.password.startsWith("$argon2")) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or Password" });
     }
 
     const isMatch = await argon2.verify(user.password, password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid Password" });
     }
 
     const token = generateToken(user._id);

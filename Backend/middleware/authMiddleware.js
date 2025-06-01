@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import rateLimit from "express-rate-limit";
 
-function authMiddleware(req, res, next) {
+export function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
@@ -16,4 +17,19 @@ function authMiddleware(req, res, next) {
   }
 }
 
-export default authMiddleware;
+const limiter = rateLimit({
+  windowMs: 2 * 60 * 1000,
+  max: 5,
+  message: {
+    status: 429,
+    error: "Too many login attempts. Please wait 2 minutes, then try again.",
+  },
+});
+export async function loginLimiter(req, res, next) {
+  try {
+    limiter(req, res, next);
+  } catch (error) {
+    console.error("Rate limiter error:", error);
+    res.status(500).json({ error: "Internal rate limit error" });
+  }
+}
