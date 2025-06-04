@@ -17,7 +17,9 @@ export async function register(req, res, next) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    const hashedPassword = await argon2.hash(password);
+    const hashedPassword = await argon2.hash(password, {
+      type: argon2.argon2i,
+    });
 
     const newdata = new data({
       name,

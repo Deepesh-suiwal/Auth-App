@@ -19,6 +19,7 @@ function App() {
 
     try {
       const endpoint = isRegister ? "/api/auth/register" : "/api/auth/login";
+      
       const res = await instance.post(endpoint, form);
       console.log(res.data);
 
