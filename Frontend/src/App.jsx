@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import instance from "./axiosConfig.js";
 
 function App() {
@@ -19,9 +19,7 @@ function App() {
 
     try {
       const endpoint = isRegister ? "/api/auth/register" : "/api/auth/login";
-      
       const res = await instance.post(endpoint, form);
-      console.log(res.data);
 
       if (isRegister) {
         alert("Registered successfully! You can now log in.");
@@ -33,7 +31,7 @@ function App() {
 
       setForm({ name: "", email: "", password: "" });
     } catch (err) {
-      console.error(err.response?.data || err.message);
+      setError(err.response?.data?.message || "Something went wrong");
     }
   }
 
@@ -53,66 +51,91 @@ function App() {
     }
     fetchUser();
   }, [token]);
+
   function updateRegister() {
     setIsRegister(!isRegister);
     setForm({ name: "", email: "", password: "" });
   }
+
   return (
-    <div>
-      <h1>React + Node + MongoDB Auth App</h1>
-      {!token ? (
-        <div>
-          <form onSubmit={handleSubmit}>
-            {isRegister && (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          React + Node + MongoDB Auth App
+        </h1>
+
+        {!token ? (
+          <>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {isRegister && (
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              )}
               <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={form.name}
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={form.email}
                 onChange={handleChange}
                 required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            )}
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-            <button type="submit">{isRegister ? "Register" : "Login"}</button>
-          </form>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <p>
-            {isRegister ? "Already have an account?" : "Don't have an account?"}
-            <button onClick={updateRegister}>
-              {isRegister ? "Login here" : "Register here"}
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+              >
+                {isRegister ? "Register" : "Login"}
+              </button>
+            </form>
+
+            {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
+
+            <p className="text-center mt-4 text-gray-600">
+              {isRegister
+                ? "Already have an account?"
+                : "Don't have an account?"}
+              <button
+                onClick={updateRegister}
+                className="text-blue-600 hover:underline ml-1"
+              >
+                {isRegister ? "Login here" : "Register here"}
+              </button>
+            </p>
+          </>
+        ) : (
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+              Welcome, {user?.name}
+            </h2>
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                setToken("");
+                setUser(null);
+              }}
+              className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition"
+            >
+              Logout
             </button>
-          </p>
-        </div>
-      ) : (
-        <div>
-          <h2>Welcome {user?.name}</h2>
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              setToken("");
-              setUser(null);
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

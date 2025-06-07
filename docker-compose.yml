@@ -1,0 +1,78 @@
+# version: "3.8"
+
+# services:
+#   frontend:
+#     build: ./Frontend
+#     ports:
+#       - "3000:80"
+
+#     networks:
+#       - mernStack
+
+#   backend:
+#     build: ./backend
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       - MONGO_URL=mongodb://mongo:27017/mern_db
+#     depends_on:
+#       - mongo
+#     networks:
+#       - mernStack
+
+#   mongo:
+#     image: mongo:latest
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo-data:/data/db
+#     networks:
+#       - mernStack
+
+# networks:
+#   mernStack:
+#     driver: bridge
+
+# volumes:
+#   mongo-data:
+#     driver: local
+
+
+
+version: "3.8"
+
+services:
+  frontend:
+    build: ./Frontend
+    ports:
+      - "5173:80"
+    networks:
+      - mernStack
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/mern_db
+    depends_on:
+      - mongo
+    networks:
+      - mernStack
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mernStack
+
+networks:
+  mernStack:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

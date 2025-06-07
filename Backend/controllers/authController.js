@@ -13,6 +13,7 @@ export async function register(req, res, next) {
     const { name, email, password } = req.body;
 
     const existingdata = await data.findOne({ email });
+    
     if (existingdata) {
       return res.status(400).json({ message: "Email already in use" });
     }
