@@ -5,8 +5,8 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import errorHandler from "./middleware/errorHandler.js";
-connectDB();
 const app = express();
+connectDB();
 
 const FRONTEND_URL = process.env.FRONTEND_URL;
 const PORT = process.env.PORT;

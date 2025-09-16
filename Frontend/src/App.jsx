@@ -8,6 +8,23 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!token) return;
+    async function fetchUser() {
+      try {
+        const res = await instance.get("/api/users/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(res.data);
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("token");
+        setToken("");
+      }
+    }
+    fetchUser();
+  }, [token]);
+
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -34,23 +51,6 @@ function App() {
       setError(err.response?.data?.message || "Something went wrong");
     }
   }
-
-  useEffect(() => {
-    if (!token) return;
-    async function fetchUser() {
-      try {
-        const res = await instance.get("/api/users/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data);
-      } catch (err) {
-        console.error(err);
-        localStorage.removeItem("token");
-        setToken("");
-      }
-    }
-    fetchUser();
-  }, [token]);
 
   function updateRegister() {
     setIsRegister(!isRegister);
